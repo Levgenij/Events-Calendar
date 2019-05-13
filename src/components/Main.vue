@@ -36,6 +36,8 @@
 	   */
       onCreateEventListener (event) {
         this.$refs.eventsList.insert(event)
+
+        this.$toasted.success('Event created!', {duration: 3000})
       },
 
       /**
@@ -54,12 +56,16 @@
         this.$refs.eventsList.update(event.id, event)
 
 		this.selectedEvent = null
+
+        this.$toasted.success('Event updated!', {duration: 3000})
       },
 
       onDeleteEventListener (event) {
         this.selectedEvent = null
 
 		this.$refs.eventsList.removeById(event.id)
+
+        this.$toasted.info('Event removed!', {duration: 3000})
       }
 	}
   }
