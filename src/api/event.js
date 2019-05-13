@@ -27,3 +27,16 @@ export const createEventRequest = (data) => {
     .withBody(data)
     .post()
 }
+
+/**
+ * Update event by it's id
+ *
+ * @param id
+ * @param data
+ * @return {*}
+ */
+export const updateEventRequest = (id, data) => {
+  return api.request(`events/${id}`)
+    .withBody(data)
+    .put()
+}
