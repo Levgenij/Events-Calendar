@@ -1,28 +1,55 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<v-app>
+		<router-view name="header"/>
+		<router-view name="sidebar"/>
+		<router-view/>
+	</v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+  import {mapMutations, mapActions} from 'vuex'
+  import {types as userTypes} from './store/user'
+  import {setAccessToken} from './util/axios'
+  import {log} from './util/helpers'
 
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  export default {
+    name: 'App',
+    created () {
+      try {
+        this.init()
+      } catch (e) {
+        log(e)
+        return this.$router.push({name: 'login'})
+      }
+    },
+    methods: {
+      ...mapMutations({
+        setUser: userTypes.SET_USER,
+      }),
+
+      ...mapActions(['initializeSettings']),
+
+      /**
+       * Initialize app
+       */
+      init () {
+        // set user from local storage
+        const cachedUser = this.$ls.get('user')
+
+        if (!cachedUser) {
+          throw new Error('No user to parse')
+        }
+
+        this.setUser(cachedUser)
+
+        const cachedToken = this.$ls.get('access_token')
+
+        if (!cachedToken) {
+          throw new Error('Unauthorized')
+        }
+
+        setAccessToken('Bearer', cachedToken)
+      }
+    }
   }
-}
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
