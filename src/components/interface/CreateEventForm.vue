@@ -31,7 +31,7 @@
 						v-model="event.description"
 						:error-messages="errors.collect('description')"
 						:counter="1000"
-						v-validate="'required|max:1000'"
+						v-validate="'max:1000'"
 						name="description"
 						label="Description"></v-textarea>
 				<v-btn color="success" :loading="isLoading" @click="onCreateEventClickListener">
@@ -71,9 +71,13 @@
 
 		if (!valid) return
 
+        this.isLoading = true
+
 		const response = await createEventRequest(this.event).catch(log)
 
-        if (response && response.data) {
+        this.isLoading = false
+
+        if (response && response.status === 200) {
           const event = momentize(fetchData(response), ['start_at', 'end_at'])
 
           this.$emit('create', event)

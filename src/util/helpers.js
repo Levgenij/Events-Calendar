@@ -112,3 +112,19 @@ export const momentize = (object, properties) => {
   return object
 }
 
+/**
+ * Momentize response collection
+ *
+ * @param fields
+ * @return {Function}
+ */
+export const toMoment = (fields) => (collection) => collection.map(x => momentize(x, fields))
+
+/**
+ * Fetches data from response
+ *
+ * @param response
+ * @return {*}
+ */
+export const fetchData = (response) => response.data.data
+

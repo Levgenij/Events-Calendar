@@ -50,6 +50,8 @@
 
         if (response && response.status === 200) {
           this.handleResponse(response)
+
+          this.$router.push({name: 'dashboard'})
         }
       },
 
