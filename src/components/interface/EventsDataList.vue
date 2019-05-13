@@ -37,7 +37,7 @@
 
 <script>
   import {getAllEventsRequest} from '../../api/event'
-  import {toMoment, fetchData, arrayRemove} from '../../util/helpers'
+  import {toMoment, fetchData, arrayRemove, log} from '../../util/helpers'
 
   export default {
     name: 'EventsDataList',

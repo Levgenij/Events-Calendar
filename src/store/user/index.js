@@ -8,6 +8,7 @@ export const types = {
 
 const getters = {
   user: state => state.user,
+  isGuest: state => !state.user.id
 }
 
 const actions = {

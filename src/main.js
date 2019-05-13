@@ -11,6 +11,7 @@ import Datetime from 'vue-datetime'
 import VuetifyConfirm from 'vuetify-confirm'
 
 import 'vue-datetime/dist/vue-datetime.css'
+import {initializeInterceptors} from './boot'
 
 Vue.config.productionTip = false
 
@@ -24,5 +25,8 @@ new Vue({
   store,
   router,
   render: h => h(App),
+  created () {
+    initializeInterceptors(this)
+  }
 }).$mount('#app')
 
