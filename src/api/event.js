@@ -40,3 +40,14 @@ export const updateEventRequest = (id, data) => {
     .withBody(data)
     .put()
 }
+
+
+/**
+ * Delete event by it's id
+ *
+ * @param id
+ * @return {*}
+ */
+export const deleteEventRequest = (id) => {
+  return api.request(`events/${id}`).delete()
+}

@@ -34,8 +34,11 @@
 						v-validate="'max:1000'"
 						name="description"
 						label="Description"></v-textarea>
-				<v-btn color="success" :loading="isLoading" @click="oUpdateEventClickListener">
+				<v-btn color="success" :loading="isUpdating" @click="oUpdateEventClickListener">
 					Save
+				</v-btn>
+				<v-btn color="error" :loading="isDeleting" @click="onDeleteEventClickListener">
+					Delete
 				</v-btn>
 			</form>
 		</v-card-text>
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-  import {updateEventRequest} from '../../api/event'
+  import {deleteEventRequest, updateEventRequest} from '../../api/event'
   import {log, fetchData, momentize} from '../../util/helpers'
 
   export default {
@@ -53,7 +56,8 @@
 	},
     data () {
       return {
-        isLoading: false,
+        isUpdating: false,
+        isDeleting: false,
         event: null
       }
     },
@@ -68,9 +72,13 @@
 
         if (!valid) return
 
+        this.isUpdating = true
+
         const response = await updateEventRequest(this.event.id, this.event).catch(log)
 
-        if (response && response.data) {
+        this.isUpdating = false
+
+        if (response && response.status === 200) {
           const event = momentize(fetchData(response), ['start_at', 'end_at'])
 
           this.$emit('input', event)
@@ -79,6 +87,27 @@
             this.errors.clear()
           }, 100)
         }
+      },
+
+      /**
+	   * Fires when user remove event
+	   *
+       * @return {Promise<void>}
+       */
+      async onDeleteEventClickListener() {
+        const confirm = await this.$confirm('Do you really want to remove event', {title: 'Warning'})
+
+        if (!confirm) return
+
+        this.isDeleting = true
+
+        const response = await deleteEventRequest(this.event.id).catch(log)
+
+        this.isDeleting = false
+
+		if (response && response.status === 200) {
+          this.$emit('delete', this.event)
+		}
       }
     },
 	watch: {
@@ -91,6 +120,11 @@
           this.event.start_at = this.event.start_at.format()
           this.event.end_at= this.event.end_at.format()
 		}
+      }
+	},
+	computed: {
+      isLoading () {
+        return this.isDeleting || this.isUpdating
       }
 	}
   }
